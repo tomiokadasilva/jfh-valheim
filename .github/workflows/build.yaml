@@ -1,0 +1,37 @@
+name: Build and Push Valheim
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    environment: magalu-vm
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Login no Magalu Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ vars.CR_ENDPOINT }}
+          username: ${{ secrets.MAGALU_CR_USER }}
+          password: ${{ secrets.MAGALU_CR_PASSWORD }}
+
+      - name: Build da imagem
+        run: |
+          docker build \
+            -t ${{ vars.CR_ENDPOINT }}/${{ vars.CR_REGISTRY_NAME }}/valheim:latest \
+            .
+
+      - name: Push da imagem
+        run: |
+          docker push \
+            ${{ vars.CR_ENDPOINT }}/${{ vars.CR_REGISTRY_NAME }}/valheim:latest

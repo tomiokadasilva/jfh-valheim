@@ -1,0 +1,18 @@
+# Secrets / environment
+.env
+.env.*
+!.env.example
+
+# Valheim persistent data, caso algum dia sejam criados no repo
+config/
+data/
+backups/
+
+# Logs
+*.log
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
