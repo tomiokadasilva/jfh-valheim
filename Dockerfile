@@ -3,7 +3,7 @@
 FROM ghcr.io/community-valheim-tools/valheim-server:latest
 
 ARG NORAIN_VERSION=1.3.0
-ARG PLANTEVERYTHING_VERSION=1.21.0
+ARG PLANTEVERYTHING_VERSION=1.21.1
 
 LABEL org.opencontainers.image.title="jfh-valheim"
 LABEL org.opencontainers.image.description="Valheim dedicated server with NoRainDamage and PlantEverything"
