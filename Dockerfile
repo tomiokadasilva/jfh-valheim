@@ -32,25 +32,23 @@ RUN set -eux; \
     mkdir -p /tmp/planteverything; \
     curl \
       --fail \
-      --silent \
       --show-error \
       --location \
       --retry 3 \
       --output /tmp/planteverything.zip \
       "https://thunderstore.io/package/download/Advize/PlantEverything/${PLANTEVERYTHING_VERSION}/"; \
+    echo "[build] ZIP baixado:"; \
+    ls -lh /tmp/planteverything.zip; \
+    echo "[build] Conteúdo do ZIP:"; \
+    unzip -l /tmp/planteverything.zip; \
     unzip -q /tmp/planteverything.zip -d /tmp/planteverything; \
+    echo "[build] Estrutura extraída:"; \
+    find /tmp/planteverything -maxdepth 5 -type f -print; \
     test -d /tmp/planteverything/BepInEx/plugins; \
     cp -a /tmp/planteverything/BepInEx/plugins/. /opt/jfh-mods/; \
-    test -f /opt/jfh-mods/Advize_PlantEverything.dll; \
-    \
-    echo "[build] Plugins empacotados:"; \
-    find /opt/jfh-mods -type f -name '*.dll' -print; \
-    \
-    rm -rf \
-      /tmp/norain \
-      /tmp/norain.zip \
-      /tmp/planteverything \
-      /tmp/planteverything.zip
+    echo "[build] Plugins após copy:"; \
+    find /opt/jfh-mods -type f -print; \
+    test -f /opt/jfh-mods/Advize_PlantEverything.dll;
 
 RUN cat > /usr/local/sbin/jfh-bootstrap <<'EOF'
 #!/bin/bash
