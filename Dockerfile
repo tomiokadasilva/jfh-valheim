@@ -8,11 +8,6 @@ LABEL org.opencontainers.image.title="jfh-valheim"
 LABEL org.opencontainers.image.description="Valheim dedicated server with NoRainDamage"
 LABEL jfh.mods.NoRainDamage="${NORAIN_VERSION}"
 
-#
-# A imagem upstream já possui curl e unzip.
-# Baixamos o pacote no build e armazenamos fora de /config,
-# pois /config será sobrescrito pelo volume persistente no runtime.
-#
 RUN set -eux; \
     mkdir -p /opt/jfh-mods; \
     mkdir -p /tmp/norain; \
@@ -30,13 +25,8 @@ RUN set -eux; \
     test -f /opt/jfh-mods/Jowleth/NoRainDamage.dll; \
     rm -rf /tmp/norain /tmp/norain.zip
 
-#
-# Wrapper executado antes do bootstrap oficial.
-#
-# O volume /config já estará montado neste momento.
-# Instalamos somente os arquivos gerenciados por nossa imagem.
-#
 RUN cat > /usr/local/sbin/jfh-bootstrap <<'EOF'
+
 #!/bin/bash
 set -euo pipefail
 
@@ -47,7 +37,6 @@ echo "[jfh] Instalando plugins..."
 
 mkdir -p "${TARGET}"
 
-# Remove estrutura antiga incorreta de builds anteriores.
 rm -rf "${TARGET}/NoRainDamage"
 
 cp -a "${SOURCE}/." "${TARGET}/"

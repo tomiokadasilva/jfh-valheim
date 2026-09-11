@@ -3,7 +3,7 @@
 .env.*
 !.env.example
 
-# Valheim persistent data, caso algum dia sejam criados no repo
+# Valheim persistent data,
 config/
 data/
 backups/
