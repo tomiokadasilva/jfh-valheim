@@ -63,7 +63,6 @@ echo "[jfh] Instalando plugins..."
 
 mkdir -p "${TARGET}"
 
-# Remove estrutura incorreta de builds antigos.
 rm -rf "${TARGET}/NoRainDamage"
 
 cp -a "${SOURCE}/." "${TARGET}/"
