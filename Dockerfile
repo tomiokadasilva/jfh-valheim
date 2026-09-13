@@ -32,6 +32,7 @@ RUN set -eux; \
     mkdir -p /tmp/planteverything; \
     curl \
       --fail \
+      --silent \
       --show-error \
       --location \
       --retry 3 \
@@ -58,11 +59,12 @@ set -euo pipefail
 SOURCE="/opt/jfh-mods"
 TARGET="/config/bepinex/plugins"
 
-echo "[jfh] Instalando plugins..."
+echo "[jfh] Instalando plugins em ${TARGET}..."
 
 mkdir -p "${TARGET}"
 
-rm -rf "${TARGET}/NoRainDamage"
+rm -rf "${TARGET}/Jowleth"
+rm -f "${TARGET}/Advize_PlantEverything.dll"
 
 cp -a "${SOURCE}/." "${TARGET}/"
 
@@ -75,5 +77,7 @@ exec /usr/local/sbin/bootstrap
 EOF
 
 RUN chmod 755 /usr/local/sbin/jfh-bootstrap
+
+ENV BEPINEX=true
 
 CMD ["/usr/local/sbin/jfh-bootstrap"]
