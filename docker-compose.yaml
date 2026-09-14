@@ -4,12 +4,12 @@ services:
     container_name: valheim
 
     cap_add:
-      - sys_nice
+      - SYS_NICE
 
     stop_grace_period: 2m
 
     ports:
-      - "2456-2457:2456-2457/udp"
+      - "2456-2458:2456-2458/udp"
 
     volumes:
       - /srv/valheim/config:/config
@@ -18,17 +18,18 @@ services:
     environment:
       SERVER_NAME: "Ja fui hardcore"
       WORLD_NAME: "DEEPNORTH"
-      SERVER_PASS: ${SERVER_PASS}
+      SERVER_PASS: "${SERVER_PASS}"
 
-      SERVER_PORT: 2456
+      SERVER_PORT: "2456"
       SERVER_PUBLIC: "false"
 
       BEPINEX: "true"
+      VALHEIM_PLUS: "false"
 
       BACKUPS: "true"
       BACKUPS_CRON: "0 */6 * * *"
-      BACKUPS_MAX_AGE: 7
+      BACKUPS_MAX_AGE: "7"
 
-      TZ: America/Sao_Paulo
+      TZ: "America/Sao_Paulo"
 
     restart: unless-stopped
