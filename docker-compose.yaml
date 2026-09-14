@@ -1,35 +1,27 @@
-services:
-  valheim:
-    image: ${VALHEIM_IMAGE}
-    container_name: valheim
+RUN cat > /usr/local/sbin/jfh-bootstrap <<'EOF'
+#!/bin/bash
+set -euo pipefail
 
-    cap_add:
-      - SYS_NICE
+SOURCE="/opt/jfh-mods"
+TARGET="/config/bepinex/plugins"
 
-    stop_grace_period: 2m
+echo "[jfh] Copiando plugins para ${TARGET}..."
 
-    ports:
-      - "2456-2458:2456-2458/udp"
+mkdir -p "${TARGET}"
 
-    volumes:
-      - /srv/valheim/config:/config
-      - /srv/valheim/data:/opt/valheim
+rm -rf "${TARGET}/Jowleth"
+rm -f "${TARGET}/Advize_PlantEverything.dll"
 
-    environment:
-      SERVER_NAME: "Ja fui hardcore"
-      WORLD_NAME: "DEEPNORTH"
-      SERVER_PASS: "${SERVER_PASS}"
+cp -a "${SOURCE}/." "${TARGET}/"
 
-      SERVER_PORT: "2456"
-      SERVER_PUBLIC: "false"
+echo "[jfh] Plugins persistentes:"
+find "${TARGET}" -type f -name '*.dll' -printf '[jfh]   %P\n'
 
-      BEPINEX: "true"
-      VALHEIM_PLUS: "false"
+echo "[jfh] Executando bootstrap original..."
 
-      BACKUPS: "true"
-      BACKUPS_CRON: "0 */6 * * *"
-      BACKUPS_MAX_AGE: "7"
+exec /usr/local/sbin/bootstrap
+EOF
 
-      TZ: "America/Sao_Paulo"
+RUN chmod 755 /usr/local/sbin/jfh-bootstrap
 
-    restart: unless-stopped
+CMD ["/usr/local/sbin/jfh-bootstrap"]
