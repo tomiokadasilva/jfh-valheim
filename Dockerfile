@@ -102,6 +102,8 @@ echo "[jfh] Instalando plugins em ${TARGET}..."
 mkdir -p "${TARGET}"
 
 rm -rf "${TARGET}/Jowleth"
+rm -rf "${TARGET}/AchievementEnablerPlus"
+rm -rf "${TARGET}/Azumatt-AzuCraftyBoxes"
 rm -f "${TARGET}/Advize_PlantEverything.dll"
 
 cp -a "${SOURCE}/." "${TARGET}/"
