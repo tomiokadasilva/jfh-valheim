@@ -1,27 +1,38 @@
-RUN cat > /usr/local/sbin/jfh-bootstrap <<'EOF'
-#!/bin/bash
-set -euo pipefail
+services:
+  valheim:
+    image: ${VALHEIM_IMAGE}
+    container_name: valheim
 
-SOURCE="/opt/jfh-mods"
-TARGET="/config/bepinex/plugins"
+    cap_add:
+      - sys_nice
 
-echo "[jfh] Copiando plugins para ${TARGET}..."
+    stop_grace_period: 2m
 
-mkdir -p "${TARGET}"
+    ports:
+      - "2456-2457:2456-2457/udp"
 
-rm -rf "${TARGET}/Jowleth"
-rm -f "${TARGET}/Advize_PlantEverything.dll"
+    volumes:
+      # Configurações e plugins BepInEx (ex.: NoRainDamage, PlantEverything,
+      # AchievementEnablerPlus, AzuCraftyBoxes) ficam em /config/bepinex/plugins.
+      - /srv/valheim/config:/config
+      # Dados do mundo (DEEPNORTH).
+      - /srv/valheim/data:/opt/valheim
 
-cp -a "${SOURCE}/." "${TARGET}/"
+    environment:
+      SERVER_NAME: "Ja fui hardcore"
+      WORLD_NAME: "DEEPNORTH"
+      SERVER_PASS: ${SERVER_PASS}
 
-echo "[jfh] Plugins persistentes:"
-find "${TARGET}" -type f -name '*.dll' -printf '[jfh]   %P\n'
+      SERVER_PORT: 2456
+      SERVER_PUBLIC: "false"
 
-echo "[jfh] Executando bootstrap original..."
+      # Obrigatório para que os plugins copiados pelo bootstrap sejam carregados.
+      BEPINEX: "true"
 
-exec /usr/local/sbin/bootstrap
-EOF
+      BACKUPS: "true"
+      BACKUPS_CRON: "0 */6 * * *"
+      BACKUPS_MAX_AGE: 7
 
-RUN chmod 755 /usr/local/sbin/jfh-bootstrap
+      TZ: America/Sao_Paulo
 
-CMD ["/usr/local/sbin/jfh-bootstrap"]
+    restart: unless-stopped
