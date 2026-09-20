@@ -1,0 +1,35 @@
+services:
+  valheim:
+    image: ${VALHEIM_IMAGE}
+    container_name: valheim-test
+
+    volumes:
+      - /home/tomioka/valheim-test/config:/config
+      - /home/tomioka/valheim-test/data:/opt/valheim
+
+    cap_add:
+      - sys_nice
+
+    stop_grace_period: 2m
+
+    ports:
+      - "12456-12457:2456-2457/udp"
+
+    environment:
+      SERVER_NAME: "Ja fui hardcore"
+      WORLD_NAME: "DEEPNORTH"
+      SERVER_PASS: ${SERVER_PASS}
+
+      SERVER_PORT: 2456
+      SERVER_PUBLIC: "false"
+
+      # Obrigatório para que os plugins copiados pelo bootstrap sejam carregados.
+      BEPINEX: "true"
+
+      BACKUPS: "true"
+      BACKUPS_CRON: "0 */6 * * *"
+      BACKUPS_MAX_AGE: 7
+
+      TZ: America/Sao_Paulo
+
+    restart: "no"

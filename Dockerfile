@@ -58,11 +58,10 @@ RUN set -eux; \
       --output /tmp/achievement.zip \
       "https://thunderstore.io/package/download/RobgobStuff/Achievement_Enabler_Plus/${ACHIEVEMENT_ENABLER_PLUS_VERSION}/"; \
     unzip -q /tmp/achievement.zip -d /tmp/achievement; \
-    test -d /tmp/achievement/plugins/AchievementEnablerPlus; \
-    cp -a /tmp/achievement/plugins/AchievementEnablerPlus /opt/jfh-mods/; \
+    test -d /tmp/achievement/BepInEx/plugins/AchievementEnablerPlus; \
+    cp -a /tmp/achievement/BepInEx/plugins/. /opt/jfh-mods/; \
     test -f /opt/jfh-mods/AchievementEnablerPlus/AchievementEnablerPlus.dll; \
-    \
-    echo "[build] Instalando AzuCraftyBoxes ${AZUCRAFTYBOXES_VERSION}"; \
+        echo "[build] Instalando AzuCraftyBoxes ${AZUCRAFTYBOXES_VERSION}"; \
     mkdir -p /tmp/azucrafty; \
     curl \
       --fail \
@@ -73,10 +72,9 @@ RUN set -eux; \
       --output /tmp/azucrafty.zip \
       "https://thunderstore.io/package/download/Azumatt/AzuCraftyBoxes/${AZUCRAFTYBOXES_VERSION}/"; \
     unzip -q /tmp/azucrafty.zip -d /tmp/azucrafty; \
-    test -d /tmp/azucrafty/plugins/Azumatt-AzuCraftyBoxes; \
-    cp -a /tmp/azucrafty/plugins/Azumatt-AzuCraftyBoxes /opt/jfh-mods/; \
-    test -f /opt/jfh-mods/Azumatt-AzuCraftyBoxes/AzuCraftyBoxes.dll; \
-    \
+    test -f /tmp/azucrafty/AzuCraftyBoxes.dll; \
+    cp /tmp/azucrafty/AzuCraftyBoxes.dll /opt/jfh-mods/; \
+    test -f /opt/jfh-mods/AzuCraftyBoxes.dll; \
     echo "[build] Plugins empacotados:"; \
     find /opt/jfh-mods -type f -name '*.dll' -print; \
     \
@@ -103,8 +101,10 @@ mkdir -p "${TARGET}"
 
 rm -rf "${TARGET}/Jowleth"
 rm -rf "${TARGET}/AchievementEnablerPlus"
-rm -rf "${TARGET}/Azumatt-AzuCraftyBoxes"
-rm -f "${TARGET}/Advize_PlantEverything.dll"
+rm -f  "${TARGET}/Advize_PlantEverything.dll"
+rm -f  "${TARGET}/AzuCraftyBoxes.dll"
+rm -f  "${TARGET}/AchievementEligibility.dll"
+rm -f  "${TARGET}/ValheimItemSanitizer.dll"
 
 cp -a "${SOURCE}/." "${TARGET}/"
 
