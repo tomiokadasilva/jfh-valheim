@@ -13,7 +13,7 @@ services:
 
     volumes:
       # Configurações e plugins BepInEx (ex.: NoRainDamage, PlantEverything,
-      # AchievementEnablerPlus, AzuCraftyBoxes) ficam em /config/bepinex/plugins.
+      # AchievementEnablerPlus, AzuCraftyBoxes, BetterNetworking) ficam em /config/bepinex/plugins.
       - /srv/valheim/config:/config
       # Dados do mundo (DEEPNORTH).
       - /srv/valheim/data:/opt/valheim
