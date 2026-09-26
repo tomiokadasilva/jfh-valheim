@@ -6,7 +6,7 @@ ARG NORAIN_VERSION=1.3.0
 ARG PLANTEVERYTHING_VERSION=1.21.2
 ARG ACHIEVEMENT_ENABLER_PLUS_VERSION=2.0.3
 ARG AZUCRAFTYBOXES_VERSION=1.8.19
-ARG BETTERNETWORKING_VALHEIM_VERSION=1.1.0
+ARG BETTERNETWORKING_VALHEIM_VERSION=1.2.0
 
 LABEL org.opencontainers.image.title="jfh-valheim"
 LABEL org.opencontainers.image.description="Valheim dedicated server with NoRainDamage, PlantEverything, Achievement Enabler Plus, AzuCraftyBoxes and BetterNetworking"
