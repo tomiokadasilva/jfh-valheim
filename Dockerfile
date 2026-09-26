@@ -1,10 +1,10 @@
-#syntax=docker/dockerfile:1
+# syntax=docker/dockerfile:1
 
 FROM ghcr.io/community-valheim-tools/valheim-server:1.3.0
 
 ARG NORAIN_VERSION=1.3.0
 ARG PLANTEVERYTHING_VERSION=1.21.2
-ARG ACHIEVEMENT_ENABLER_PLUS_VERSION=2.0.1
+ARG ACHIEVEMENT_ENABLER_PLUS_VERSION=2.0.3
 ARG AZUCRAFTYBOXES_VERSION=1.8.19
 
 LABEL org.opencontainers.image.title="jfh-valheim"
@@ -15,8 +15,10 @@ LABEL jfh.mods.AchievementEnablerPlus="${ACHIEVEMENT_ENABLER_PLUS_VERSION}"
 LABEL jfh.mods.AzuCraftyBoxes="${AZUCRAFTYBOXES_VERSION}"
 
 RUN set -eux; \
-  mkdir -p /opt/jfh-mods /tmp/norain; \
+  mkdir -p /opt/jfh-mods; \
+  \
   echo "[build] Instalando NoRainDamage ${NORAIN_VERSION}"; \
+  mkdir -p /tmp/norain; \
   curl \
   --fail \
   --silent \
@@ -29,11 +31,9 @@ RUN set -eux; \
   test -d /tmp/norain/BepInEx/plugins; \
   cp -a /tmp/norain/BepInEx/plugins/. /opt/jfh-mods/; \
   test -f /opt/jfh-mods/Jowleth/NoRainDamage.dll; \
-  rm -rf /tmp/norain /tmp/norain.zip
-
-RUN set -eux; \
-  mkdir -p /tmp/planteverything; \
+  \
   echo "[build] Instalando PlantEverything ${PLANTEVERYTHING_VERSION}"; \
+  mkdir -p /tmp/planteverything; \
   curl \
   --fail \
   --silent \
@@ -46,11 +46,9 @@ RUN set -eux; \
   test -f /tmp/planteverything/Advize_PlantEverything.dll; \
   cp /tmp/planteverything/Advize_PlantEverything.dll /opt/jfh-mods/; \
   test -f /opt/jfh-mods/Advize_PlantEverything.dll; \
-  rm -rf /tmp/planteverything /tmp/planteverything.zip
-
-RUN set -eux; \
-  mkdir -p /tmp/achievement; \
+  \
   echo "[build] Instalando Achievement Enabler Plus ${ACHIEVEMENT_ENABLER_PLUS_VERSION}"; \
+  mkdir -p /tmp/achievement; \
   curl \
   --fail \
   --silent \
@@ -60,16 +58,11 @@ RUN set -eux; \
   --output /tmp/achievement.zip \
   "https://thunderstore.io/package/download/RobgobStuff/Achievement_Enabler_Plus/${ACHIEVEMENT_ENABLER_PLUS_VERSION}/"; \
   unzip -q /tmp/achievement.zip -d /tmp/achievement; \
-  test -d /tmp/achievement/plugins/AchievementEnablerPlus; \
-  cp -a /tmp/achievement/plugins/AchievementEnablerPlus /opt/jfh-mods/; \
   test -d /tmp/achievement/BepInEx/plugins/AchievementEnablerPlus; \
   cp -a /tmp/achievement/BepInEx/plugins/. /opt/jfh-mods/; \
   test -f /opt/jfh-mods/AchievementEnablerPlus/AchievementEnablerPlus.dll; \
-  rm -rf /tmp/achievement /tmp/achievement.zip
-
-RUN set -eux; \
-  mkdir -p /tmp/azucrafty; \
   echo "[build] Instalando AzuCraftyBoxes ${AZUCRAFTYBOXES_VERSION}"; \
+  mkdir -p /tmp/azucrafty; \
   curl \
   --fail \
   --silent \
@@ -79,15 +72,9 @@ RUN set -eux; \
   --output /tmp/azucrafty.zip \
   "https://thunderstore.io/package/download/Azumatt/AzuCraftyBoxes/${AZUCRAFTYBOXES_VERSION}/"; \
   unzip -q /tmp/azucrafty.zip -d /tmp/azucrafty; \
-  test -d /tmp/azucrafty/plugins/Azumatt-AzuCraftyBoxes; \
-  cp -a /tmp/azucrafty/plugins/Azumatt-AzuCraftyBoxes /opt/jfh-mods/; \
-  test -f /opt/jfh-mods/Azumatt-AzuCraftyBoxes/AzuCraftyBoxes.dll; \
   test -f /tmp/azucrafty/AzuCraftyBoxes.dll; \
   cp /tmp/azucrafty/AzuCraftyBoxes.dll /opt/jfh-mods/; \
   test -f /opt/jfh-mods/AzuCraftyBoxes.dll; \
-  rm -rf /tmp/azucrafty /tmp/azucrafty.zip
-
-RUN set -eux; \
   echo "[build] Plugins empacotados:"; \
   find /opt/jfh-mods -type f -name '*.dll' -print; \
   \
@@ -102,7 +89,7 @@ RUN set -eux; \
   /tmp/azucrafty.zip
 
 RUN cat > /usr/local/sbin/jfh-bootstrap <<'EOF'
-!/bin/bash
+#!/bin/bash
 set -euo pipefail
 
 SOURCE="/opt/jfh-mods"
@@ -114,8 +101,6 @@ mkdir -p "${TARGET}"
 
 rm -rf "${TARGET}/Jowleth"
 rm -rf "${TARGET}/AchievementEnablerPlus"
-rm -rf "${TARGET}/Azumatt-AzuCraftyBoxes"
-rm -f  "${TARGET}/Advize_PlantEverything.dll"
 rm -f  "${TARGET}/Advize_PlantEverything.dll"
 rm -f  "${TARGET}/AzuCraftyBoxes.dll"
 rm -f  "${TARGET}/AchievementEligibility.dll"
