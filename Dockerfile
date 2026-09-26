@@ -99,9 +99,18 @@ RUN set -eux; \
   --output /tmp/betternetworking.zip \
   "https://thunderstore.io/package/download/SimplifyDave/BetterNetworking_Valheim/${BETTERNETWORKING_VALHEIM_VERSION}/"; \
   unzip -q /tmp/betternetworking.zip -d /tmp/betternetworking; \
+  echo "[build] Extracting BetterNetworking archive"; \
+  unzip -q /tmp/betternetworking.zip -d /tmp/betternetworking; \
+  echo "[build] Extracted files:"; \
+  find /tmp/betternetworking -type f -print; \
+  echo "[build] Checking BetterNetworking DLL"; \
   test -f /tmp/betternetworking/plugins/BetterNetworking_Valheim/DIT.BetterNetworking10.dll; \
-  cp /tmp/betternetworking/plugins/BetterNetworking_Valheim/. /opt/jfh-mods/; \
+  echo "[build] Copying BetterNetworking DLL"; \
+  mkdir -p /opt/jfh-mods/BetterNetworking_Valheim; \
+  cp -a /tmp/betternetworking/plugins/BetterNetworking_Valheim/. /opt/jfh-mods/BetterNetworking_Valheim/; \
+  echo "[build] Verifying staged DLL"; \
   test -f /opt/jfh-mods/BetterNetworking_Valheim/DIT.BetterNetworking10.dll; \
+  echo "[build] Cleaning temporary files"; \
   rm -rf /tmp/betternetworking /tmp/betternetworking.zip
 
 RUN set -eux; \
