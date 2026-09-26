@@ -127,12 +127,11 @@ RUN set -eux; \
   --output /tmp/betternetworking.zip \
   "https://thunderstore.io/package/download/SimplifyDave/BetterNetworking_Valheim/${BETTERNETWORKING_VALHEIM_VERSION}/"; \
   unzip -q /tmp/betternetworking.zip -d /tmp/betternetworking; \
+  mkdir -p /opt/jfh-mods/BetterNetworking_Valheim; \
   if [ -d /tmp/betternetworking/BepInEx/plugins ]; then \
   cp -a /tmp/betternetworking/BepInEx/plugins/. /opt/jfh-mods/; \
-  else \
-  find /tmp/betternetworking -type f -name '*.dll' -exec cp -t /opt/jfh-mods {} +; \
   fi; \
-  test -n "$(find /opt/jfh-mods -type f -name 'BetterNetworking*.dll' -print -quit)"; \
+  test -n "$(find /opt/jfh-mods -type f \( -iname 'DIT.BetterNetworking10.dll' -o -iname 'BetterNetworking*.dll' \) -print -quit)"; \
   \
   echo "[build] Plugins empacotados:"; \
   find /opt/jfh-mods -type f -name '*.dll' -print; \
@@ -170,8 +169,7 @@ rm -f "${TARGET}/Advize_PlantEverything.dll"
 rm -f "${TARGET}/AzuCraftyBoxes.dll"
 rm -f "${TARGET}/Armoire.dll"
 rm -f "${TARGET}/FuelEternal.dll"
-rm -f "${TARGET}/BetterNetworking_Valheim.dll"
-rm -f "${TARGET}/BetterNetworking.dll"
+rm -f "${TARGET}/DIT.BetterNetworking10.dll"
 rm -f "${TARGET}/AchievementEligibility.dll"
 rm -f "${TARGET}/ValheimItemSanitizer.dll"
 
