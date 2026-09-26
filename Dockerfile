@@ -15,8 +15,9 @@ LABEL jfh.mods.AchievementEnablerPlus="${ACHIEVEMENT_ENABLER_PLUS_VERSION}"
 LABEL jfh.mods.AzuCraftyBoxes="${AZUCRAFTYBOXES_VERSION}"
 
 RUN set -eux; \
-  mkdir -p /opt/jfh-mods; \
-  \
+  mkdir -p /opt/jfh-mods
+
+RUN set -eux; \
   echo "[build] Instalando NoRainDamage ${NORAIN_VERSION}"; \
   mkdir -p /tmp/norain; \
   curl \
@@ -31,7 +32,9 @@ RUN set -eux; \
   test -d /tmp/norain/BepInEx/plugins; \
   cp -a /tmp/norain/BepInEx/plugins/. /opt/jfh-mods/; \
   test -f /opt/jfh-mods/Jowleth/NoRainDamage.dll; \
-  \
+  rm -rf /tmp/norain /tmp/norain.zip
+
+RUN set -eux; \
   echo "[build] Instalando PlantEverything ${PLANTEVERYTHING_VERSION}"; \
   mkdir -p /tmp/planteverything; \
   curl \
@@ -46,7 +49,9 @@ RUN set -eux; \
   test -f /tmp/planteverything/Advize_PlantEverything.dll; \
   cp /tmp/planteverything/Advize_PlantEverything.dll /opt/jfh-mods/; \
   test -f /opt/jfh-mods/Advize_PlantEverything.dll; \
-  \
+  rm -rf /tmp/planteverything /tmp/planteverything.zip
+
+RUN set -eux; \
   echo "[build] Instalando Achievement Enabler Plus ${ACHIEVEMENT_ENABLER_PLUS_VERSION}"; \
   mkdir -p /tmp/achievement; \
   curl \
@@ -61,6 +66,9 @@ RUN set -eux; \
   test -d /tmp/achievement/BepInEx/plugins/AchievementEnablerPlus; \
   cp -a /tmp/achievement/BepInEx/plugins/. /opt/jfh-mods/; \
   test -f /opt/jfh-mods/AchievementEnablerPlus/AchievementEnablerPlus.dll; \
+  rm -rf /tmp/achievement /tmp/achievement.zip
+
+RUN set -eux; \
   echo "[build] Instalando AzuCraftyBoxes ${AZUCRAFTYBOXES_VERSION}"; \
   mkdir -p /tmp/azucrafty; \
   curl \
@@ -75,6 +83,9 @@ RUN set -eux; \
   test -f /tmp/azucrafty/AzuCraftyBoxes.dll; \
   cp /tmp/azucrafty/AzuCraftyBoxes.dll /opt/jfh-mods/; \
   test -f /opt/jfh-mods/AzuCraftyBoxes.dll; \
+  rm -rf /tmp/azucrafty /tmp/azucrafty.zip
+
+RUN set -eux; \
   echo "[build] Plugins empacotados:"; \
   find /opt/jfh-mods -type f -name '*.dll' -print; \
   \
@@ -87,6 +98,7 @@ RUN set -eux; \
   /tmp/achievement.zip \
   /tmp/azucrafty \
   /tmp/azucrafty.zip
+
 
 RUN cat > /usr/local/sbin/jfh-bootstrap <<'EOF'
 #!/bin/bash
