@@ -8,9 +8,10 @@ ARG ACHIEVEMENT_ENABLER_PLUS_VERSION=2.0.3
 ARG AZUCRAFTYBOXES_VERSION=1.8.19
 ARG ARMOIRE_VERSION=1.2.2
 ARG FUEL_ETERNAL_VERSION=1.2.1
+ARG BETTERNETWORKING_VALHEIM_VERSION=1.2.0
 
 LABEL org.opencontainers.image.title="jfh-valheim"
-LABEL org.opencontainers.image.description="Valheim dedicated server with NoRainDamage, PlantEverything, Achievement Enabler Plus, AzuCraftyBoxes, Armoire and FuelEternal"
+LABEL org.opencontainers.image.description="Valheim dedicated server with NoRainDamage, PlantEverything, Achievement Enabler Plus, AzuCraftyBoxes, Armoire, FuelEternal and BetterNetworking_Valheim"
 
 LABEL jfh.mods.NoRainDamage="${NORAIN_VERSION}"
 LABEL jfh.mods.PlantEverything="${PLANTEVERYTHING_VERSION}"
@@ -18,6 +19,7 @@ LABEL jfh.mods.AchievementEnablerPlus="${ACHIEVEMENT_ENABLER_PLUS_VERSION}"
 LABEL jfh.mods.AzuCraftyBoxes="${AZUCRAFTYBOXES_VERSION}"
 LABEL jfh.mods.Armoire="${ARMOIRE_VERSION}"
 LABEL jfh.mods.FuelEternal="${FUEL_ETERNAL_VERSION}"
+LABEL jfh.mods.BetterNetworking_Valheim="${BETTERNETWORKING_VALHEIM_VERSION}"
 
 RUN set -eux; \
   mkdir -p /opt/jfh-mods; \
@@ -114,6 +116,24 @@ RUN set -eux; \
   cp /tmp/fueletternal/FuelEternal.dll /opt/jfh-mods/; \
   test -f /opt/jfh-mods/FuelEternal.dll; \
   \
+  echo "[build] Instalando BetterNetworking_Valheim ${BETTERNETWORKING_VALHEIM_VERSION}"; \
+  mkdir -p /tmp/betternetworking; \
+  curl \
+  --fail \
+  --silent \
+  --show-error \
+  --location \
+  --retry 3 \
+  --output /tmp/betternetworking.zip \
+  "https://thunderstore.io/package/download/SimplifyDave/BetterNetworking_Valheim/${BETTERNETWORKING_VALHEIM_VERSION}/"; \
+  unzip -q /tmp/betternetworking.zip -d /tmp/betternetworking; \
+  if [ -d /tmp/betternetworking/BepInEx/plugins ]; then \
+  cp -a /tmp/betternetworking/BepInEx/plugins/. /opt/jfh-mods/; \
+  else \
+  find /tmp/betternetworking -type f -name '*.dll' -exec cp -t /opt/jfh-mods {} +; \
+  fi; \
+  test -n "$(find /opt/jfh-mods -type f -name 'BetterNetworking*.dll' -print -quit)"; \
+  \
   echo "[build] Plugins empacotados:"; \
   find /opt/jfh-mods -type f -name '*.dll' -print; \
   \
@@ -129,7 +149,9 @@ RUN set -eux; \
   /tmp/armoire \
   /tmp/armoire.zip \
   /tmp/fueletternal \
-  /tmp/fueletternal.zip
+  /tmp/fueletternal.zip \
+  /tmp/betternetworking \
+  /tmp/betternetworking.zip
 
 RUN cat > /usr/local/sbin/jfh-bootstrap <<'EOF'
 #!/bin/bash
@@ -148,6 +170,8 @@ rm -f "${TARGET}/Advize_PlantEverything.dll"
 rm -f "${TARGET}/AzuCraftyBoxes.dll"
 rm -f "${TARGET}/Armoire.dll"
 rm -f "${TARGET}/FuelEternal.dll"
+rm -f "${TARGET}/BetterNetworking_Valheim.dll"
+rm -f "${TARGET}/BetterNetworking.dll"
 rm -f "${TARGET}/AchievementEligibility.dll"
 rm -f "${TARGET}/ValheimItemSanitizer.dll"
 
