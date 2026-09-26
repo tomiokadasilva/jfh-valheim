@@ -2,8 +2,8 @@
 
 FROM ghcr.io/community-valheim-tools/valheim-server:latest
 
-ARG NORAIN_VERSION=1.3.0
-ARG PLANTEVERYTHING_VERSION=1.21.2
+ARG NORAIN_VERSION=1.3.1
+ARG PLANTEVERYTHING_VERSION=1.21.3
 ARG ACHIEVEMENT_ENABLER_PLUS_VERSION=2.0.3
 ARG AZUCRAFTYBOXES_VERSION=1.8.19
 
@@ -15,10 +15,8 @@ LABEL jfh.mods.AchievementEnablerPlus="${ACHIEVEMENT_ENABLER_PLUS_VERSION}"
 LABEL jfh.mods.AzuCraftyBoxes="${AZUCRAFTYBOXES_VERSION}"
 
 RUN set -eux; \
-  mkdir -p /opt/jfh-mods; \
-  \
+  mkdir -p /opt/jfh-mods /tmp/norain; \
   echo "[build] Instalando NoRainDamage ${NORAIN_VERSION}"; \
-  mkdir -p /tmp/norain; \
   curl \
   --fail \
   --silent \
@@ -31,9 +29,11 @@ RUN set -eux; \
   test -d /tmp/norain/BepInEx/plugins; \
   cp -a /tmp/norain/BepInEx/plugins/. /opt/jfh-mods/; \
   test -f /opt/jfh-mods/Jowleth/NoRainDamage.dll; \
-  \
-  echo "[build] Instalando PlantEverything ${PLANTEVERYTHING_VERSION}"; \
+  rm -rf /tmp/norain /tmp/norain.zip
+
+RUN set -eux; \
   mkdir -p /tmp/planteverything; \
+  echo "[build] Instalando PlantEverything ${PLANTEVERYTHING_VERSION}"; \
   curl \
   --fail \
   --silent \
@@ -46,9 +46,11 @@ RUN set -eux; \
   test -f /tmp/planteverything/Advize_PlantEverything.dll; \
   cp /tmp/planteverything/Advize_PlantEverything.dll /opt/jfh-mods/; \
   test -f /opt/jfh-mods/Advize_PlantEverything.dll; \
-  \
-  echo "[build] Instalando Achievement Enabler Plus ${ACHIEVEMENT_ENABLER_PLUS_VERSION}"; \
+  rm -rf /tmp/planteverything /tmp/planteverything.zip
+
+RUN set -eux; \
   mkdir -p /tmp/achievement; \
+  echo "[build] Instalando Achievement Enabler Plus ${ACHIEVEMENT_ENABLER_PLUS_VERSION}"; \
   curl \
   --fail \
   --silent \
@@ -63,10 +65,11 @@ RUN set -eux; \
   test -d /tmp/achievement/BepInEx/plugins/AchievementEnablerPlus; \
   cp -a /tmp/achievement/BepInEx/plugins/. /opt/jfh-mods/; \
   test -f /opt/jfh-mods/AchievementEnablerPlus/AchievementEnablerPlus.dll; \
-  \
-  echo "[build] Instalando AzuCraftyBoxes ${AZUCRAFTYBOXES_VERSION}"; \
-  echo "[build] Instalando AzuCraftyBoxes ${AZUCRAFTYBOXES_VERSION}"; \
+  rm -rf /tmp/achievement /tmp/achievement.zip
+
+RUN set -eux; \
   mkdir -p /tmp/azucrafty; \
+  echo "[build] Instalando AzuCraftyBoxes ${AZUCRAFTYBOXES_VERSION}"; \
   curl \
   --fail \
   --silent \
@@ -79,10 +82,12 @@ RUN set -eux; \
   test -d /tmp/azucrafty/plugins/Azumatt-AzuCraftyBoxes; \
   cp -a /tmp/azucrafty/plugins/Azumatt-AzuCraftyBoxes /opt/jfh-mods/; \
   test -f /opt/jfh-mods/Azumatt-AzuCraftyBoxes/AzuCraftyBoxes.dll; \
-  \
   test -f /tmp/azucrafty/AzuCraftyBoxes.dll; \
   cp /tmp/azucrafty/AzuCraftyBoxes.dll /opt/jfh-mods/; \
   test -f /opt/jfh-mods/AzuCraftyBoxes.dll; \
+  rm -rf /tmp/azucrafty /tmp/azucrafty.zip
+
+RUN set -eux; \
   echo "[build] Plugins empacotados:"; \
   find /opt/jfh-mods -type f -name '*.dll' -print; \
   \
