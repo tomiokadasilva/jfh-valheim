@@ -5,14 +5,14 @@ FROM ghcr.io/community-valheim-tools/valheim-server:latest
 ARG NORAIN_VERSION=1.3.1
 ARG PLANTEVERYTHING_VERSION=1.21.3
 # ARG ACHIEVEMENT_ENABLER_PLUS_VERSION=2.0.3
-ARG AZUCRAFTYBOXES_VERSION=1.8.19
+# ARG AZUCRAFTYBOXES_VERSION=1.8.19
 
 LABEL org.opencontainers.image.title="jfh-valheim"
 LABEL org.opencontainers.image.description="Valheim dedicated server with NoRainDamage, PlantEverything, Achievement Enabler Plus and AzuCraftyBoxes"
 LABEL jfh.mods.NoRainDamage="${NORAIN_VERSION}"
 LABEL jfh.mods.PlantEverything="${PLANTEVERYTHING_VERSION}"
 # LABEL jfh.mods.AchievementEnablerPlus="${ACHIEVEMENT_ENABLER_PLUS_VERSION}"
-LABEL jfh.mods.AzuCraftyBoxes="${AZUCRAFTYBOXES_VERSION}"
+# LABEL jfh.mods.AzuCraftyBoxes="${AZUCRAFTYBOXES_VERSION}"
 
 RUN set -eux; \
   mkdir -p /opt/jfh-mods /tmp/norain; \
@@ -67,25 +67,25 @@ RUN set -eux; \
 #   test -f /opt/jfh-mods/AchievementEnablerPlus/AchievementEnablerPlus.dll; \
 #   rm -rf /tmp/achievement /tmp/achievement.zip
 
-RUN set -eux; \
-  mkdir -p /tmp/azucrafty; \
-  echo "[build] Instalando AzuCraftyBoxes ${AZUCRAFTYBOXES_VERSION}"; \
-  curl \
-  --fail \
-  --silent \
-  --show-error \
-  --location \
-  --retry 3 \
-  --output /tmp/azucrafty.zip \
-  "https://thunderstore.io/package/download/Azumatt/AzuCraftyBoxes/${AZUCRAFTYBOXES_VERSION}/"; \
-  unzip -q /tmp/azucrafty.zip -d /tmp/azucrafty; \
-  test -d /tmp/azucrafty/plugins/Azumatt-AzuCraftyBoxes; \
-  cp -a /tmp/azucrafty/plugins/Azumatt-AzuCraftyBoxes /opt/jfh-mods/; \
-  test -f /opt/jfh-mods/Azumatt-AzuCraftyBoxes/AzuCraftyBoxes.dll; \
-  test -f /tmp/azucrafty/AzuCraftyBoxes.dll; \
-  cp /tmp/azucrafty/AzuCraftyBoxes.dll /opt/jfh-mods/; \
-  test -f /opt/jfh-mods/AzuCraftyBoxes.dll; \
-  rm -rf /tmp/azucrafty /tmp/azucrafty.zip
+# RUN set -eux; \
+#   mkdir -p /tmp/azucrafty; \
+#   echo "[build] Instalando AzuCraftyBoxes ${AZUCRAFTYBOXES_VERSION}"; \
+#   curl \
+#   --fail \
+#   --silent \
+#   --show-error \
+#   --location \
+#   --retry 3 \
+#   --output /tmp/azucrafty.zip \
+#   "https://thunderstore.io/package/download/Azumatt/AzuCraftyBoxes/${AZUCRAFTYBOXES_VERSION}/"; \
+#   unzip -q /tmp/azucrafty.zip -d /tmp/azucrafty; \
+#   test -d /tmp/azucrafty/plugins/Azumatt-AzuCraftyBoxes; \
+#   cp -a /tmp/azucrafty/plugins/Azumatt-AzuCraftyBoxes /opt/jfh-mods/; \
+#   test -f /opt/jfh-mods/Azumatt-AzuCraftyBoxes/AzuCraftyBoxes.dll; \
+#   test -f /tmp/azucrafty/AzuCraftyBoxes.dll; \
+#   cp /tmp/azucrafty/AzuCraftyBoxes.dll /opt/jfh-mods/; \
+#   test -f /opt/jfh-mods/AzuCraftyBoxes.dll; \
+#   rm -rf /tmp/azucrafty /tmp/azucrafty.zip
 
 RUN set -eux; \
   echo "[build] Plugins empacotados:"; \
@@ -95,11 +95,11 @@ RUN set -eux; \
   /tmp/norain \
   /tmp/norain.zip \
   /tmp/planteverything \
-  /tmp/planteverything.zip \
-  # /tmp/achievement \
-  # /tmp/achievement.zip \
-  /tmp/azucrafty \
-  /tmp/azucrafty.zip
+  /tmp/planteverything.zip 
+# /tmp/achievement \
+# /tmp/achievement.zip \
+# /tmp/azucrafty \
+# /tmp/azucrafty.zip
 
 RUN cat > /usr/local/sbin/jfh-bootstrap <<'EOF'
 #!/bin/bash
@@ -114,10 +114,10 @@ mkdir -p "${TARGET}"
 
 rm -rf "${TARGET}/Jowleth"
 # rm -rf "${TARGET}/AchievementEnablerPlus"
-rm -rf "${TARGET}/Azumatt-AzuCraftyBoxes"
+# rm -rf "${TARGET}/Azumatt-AzuCraftyBoxes"
 rm -f  "${TARGET}/Advize_PlantEverything.dll"
 rm -f  "${TARGET}/Advize_PlantEverything.dll"
-rm -f  "${TARGET}/AzuCraftyBoxes.dll"
+# rm -f  "${TARGET}/AzuCraftyBoxes.dll"
 # rm -f  "${TARGET}/AchievementEligibility.dll"
 rm -f  "${TARGET}/ValheimItemSanitizer.dll"
 
