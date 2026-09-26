@@ -89,7 +89,7 @@ RUN set -eux; \
 
 RUN set -eux; \
   echo "[build] Instalando BetterNetworking_Valheim ${BETTERNETWORKING_VALHEIM_VERSION}"; \
-  mkdir -p /tmp/betternetworking /opt/jfh-mods/BetterNetworking_Valheim; \
+  mkdir -p /tmp/betternetworking; \
   curl \
   --fail \
   --silent \
