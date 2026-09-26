@@ -5,21 +5,16 @@ FROM ghcr.io/community-valheim-tools/valheim-server:latest
 ARG NORAIN_VERSION=1.3.0
 ARG PLANTEVERYTHING_VERSION=1.21.2
 ARG ACHIEVEMENT_ENABLER_PLUS_VERSION=2.0.3
+ARG BETTERNETWORKING_VERSION=1.2.0
 ARG AZUCRAFTYBOXES_VERSION=1.8.19
-ARG ARMOIRE_VERSION=1.2.2
-ARG FUEL_ETERNAL_VERSION=1.2.1
-ARG BETTERNETWORKING_VALHEIM_VERSION=1.2.0
 
 LABEL org.opencontainers.image.title="jfh-valheim"
-LABEL org.opencontainers.image.description="Valheim dedicated server with NoRainDamage, PlantEverything, Achievement Enabler Plus, AzuCraftyBoxes, Armoire, FuelEternal and BetterNetworking_Valheim"
-
+LABEL org.opencontainers.image.description="Valheim dedicated server with NoRainDamage, PlantEverything, Achievement Enabler Plus, BetterNetworking and AzuCraftyBoxes"
 LABEL jfh.mods.NoRainDamage="${NORAIN_VERSION}"
 LABEL jfh.mods.PlantEverything="${PLANTEVERYTHING_VERSION}"
 LABEL jfh.mods.AchievementEnablerPlus="${ACHIEVEMENT_ENABLER_PLUS_VERSION}"
+LABEL jfh.mods.BetterNetworking="${BETTERNETWORKING_VERSION}"
 LABEL jfh.mods.AzuCraftyBoxes="${AZUCRAFTYBOXES_VERSION}"
-LABEL jfh.mods.Armoire="${ARMOIRE_VERSION}"
-LABEL jfh.mods.FuelEternal="${FUEL_ETERNAL_VERSION}"
-LABEL jfh.mods.BetterNetworking_Valheim="${BETTERNETWORKING_VALHEIM_VERSION}"
 
 RUN set -eux; \
   mkdir -p /opt/jfh-mods; \
@@ -65,10 +60,28 @@ RUN set -eux; \
   --output /tmp/achievement.zip \
   "https://thunderstore.io/package/download/RobgobStuff/Achievement_Enabler_Plus/${ACHIEVEMENT_ENABLER_PLUS_VERSION}/"; \
   unzip -q /tmp/achievement.zip -d /tmp/achievement; \
+  test -d /tmp/achievement/plugins/AchievementEnablerPlus; \
+  cp -a /tmp/achievement/plugins/AchievementEnablerPlus /opt/jfh-mods/; \
   test -d /tmp/achievement/BepInEx/plugins/AchievementEnablerPlus; \
   cp -a /tmp/achievement/BepInEx/plugins/. /opt/jfh-mods/; \
   test -f /opt/jfh-mods/AchievementEnablerPlus/AchievementEnablerPlus.dll; \
   \
+  echo "[build] Instalando BetterNetworking ${BETTERNETWORKING_VERSION}"; \
+  mkdir -p /tmp/betternetworking; \
+  curl \
+  --fail \
+  --silent \
+  --show-error \
+  --location \
+  --retry 3 \
+  --output /tmp/betternetworking.zip \
+  "https://thunderstore.io/package/download/SimplifyDave/BetterNetworking_Valheim/${BETTERNETWORKING_VERSION}/"; \
+  unzip -q /tmp/betternetworking.zip -d /tmp/betternetworking; \
+  test -d /tmp/betternetworking/BepInEx/plugins/BetterNetworking_Valheim; \
+  cp -a /tmp/betternetworking/BepInEx/plugins/BetterNetworking_Valheim /opt/jfh-mods/; \
+  test -f /opt/jfh-mods/BetterNetworking_Valheim/DIT.BetterNetworking10.dll; \
+  \
+  echo "[build] Instalando AzuCraftyBoxes ${AZUCRAFTYBOXES_VERSION}"; \
   echo "[build] Instalando AzuCraftyBoxes ${AZUCRAFTYBOXES_VERSION}"; \
   mkdir -p /tmp/azucrafty; \
   curl \
@@ -78,7 +91,15 @@ RUN set -eux; \
   --location \
   --retry 3 \
   --output /tmp/azucrafty.zip \
+  "https://thunderstore.io/package/download/Azumatt/AzuCraftyBoxes/${AZUCRAFTYBOXES_VERSION}/"; \
+  unzip -q /tmp/azucrafty.zip -d /tmp/azucrafty; \
+  test -d /tmp/azucrafty/plugins/Azumatt-AzuCraftyBoxes; \
+  cp -a /tmp/azucrafty/plugins/Azumatt-AzuCraftyBoxes /opt/jfh-mods/; \
+  test -f /opt/jfh-mods/Azumatt-AzuCraftyBoxes/AzuCraftyBoxes.dll; \
   \
+  test -f /tmp/azucrafty/AzuCraftyBoxes.dll; \
+  cp /tmp/azucrafty/AzuCraftyBoxes.dll /opt/jfh-mods/; \
+  test -f /opt/jfh-mods/AzuCraftyBoxes.dll; \
   echo "[build] Plugins empacotados:"; \
   find /opt/jfh-mods -type f -name '*.dll' -print; \
   \
@@ -89,14 +110,10 @@ RUN set -eux; \
   /tmp/planteverything.zip \
   /tmp/achievement \
   /tmp/achievement.zip \
-  /tmp/azucrafty \
-  /tmp/azucrafty.zip \
-  /tmp/armoire \
-  /tmp/armoire.zip \
-  /tmp/fueletternal \
-  /tmp/fueletternal.zip \
   /tmp/betternetworking \
-  /tmp/betternetworking.zip
+  /tmp/betternetworking.zip \
+  /tmp/azucrafty \
+  /tmp/azucrafty.zip
 
 RUN cat > /usr/local/sbin/jfh-bootstrap <<'EOF'
 #!/bin/bash
@@ -111,20 +128,22 @@ mkdir -p "${TARGET}"
 
 rm -rf "${TARGET}/Jowleth"
 rm -rf "${TARGET}/AchievementEnablerPlus"
+rm -rf "${TARGET}/BetterNetworking_Valheim"
+rm -rf "${TARGET}/Azumatt-AzuCraftyBoxes"
 rm -f "${TARGET}/Advize_PlantEverything.dll"
-rm -f "${TARGET}/AzuCraftyBoxes.dll"
-rm -f "${TARGET}/Armoire.dll"
-rm -f "${TARGET}/FuelEternal.dll"
-rm -f "${TARGET}/DIT.BetterNetworking10.dll"
-rm -f "${TARGET}/AchievementEligibility.dll"
-rm -f "${TARGET}/ValheimItemSanitizer.dll"
+rm -f  "${TARGET}/Advize_PlantEverything.dll"
+rm -f  "${TARGET}/DIT.BetterNetworking10.dll"
+rm -f  "${TARGET}/AzuCraftyBoxes.dll"
+rm -f  "${TARGET}/AchievementEligibility.dll"
+rm -f  "${TARGET}/ValheimItemSanitizer.dll"
 
 cp -a "${SOURCE}/." "${TARGET}/"
 
 echo "[jfh] Plugins instalados:"
-find "${TARGET}" -type f -name '*.dll' -printf '[jfh] %P\n'
+find "${TARGET}" -type f -name '*.dll' -printf '[jfh]   %P\n'
 
 echo "[jfh] Iniciando bootstrap original..."
+
 exec /usr/local/sbin/bootstrap
 EOF
 
