@@ -95,8 +95,8 @@ RUN set -eux; \
   /tmp/norain \
   /tmp/norain.zip \
   /tmp/planteverything \
-  /tmp/planteverything.zip 
-/tmp/achievement \
+  /tmp/planteverything.zip \
+  /tmp/achievement \
   /tmp/achievement.zip \
   /tmp/azucrafty \
   /tmp/azucrafty.zip
