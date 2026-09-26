@@ -5,15 +5,13 @@ FROM ghcr.io/community-valheim-tools/valheim-server:latest
 ARG NORAIN_VERSION=1.3.0
 ARG PLANTEVERYTHING_VERSION=1.21.2
 ARG ACHIEVEMENT_ENABLER_PLUS_VERSION=2.0.3
-ARG BETTERNETWORKING_VERSION=1.2.0
 ARG AZUCRAFTYBOXES_VERSION=1.8.19
 
 LABEL org.opencontainers.image.title="jfh-valheim"
-LABEL org.opencontainers.image.description="Valheim dedicated server with NoRainDamage, PlantEverything, Achievement Enabler Plus, BetterNetworking and AzuCraftyBoxes"
+LABEL org.opencontainers.image.description="Valheim dedicated server with NoRainDamage, PlantEverything, Achievement Enabler Plus and AzuCraftyBoxes"
 LABEL jfh.mods.NoRainDamage="${NORAIN_VERSION}"
 LABEL jfh.mods.PlantEverything="${PLANTEVERYTHING_VERSION}"
 LABEL jfh.mods.AchievementEnablerPlus="${ACHIEVEMENT_ENABLER_PLUS_VERSION}"
-LABEL jfh.mods.BetterNetworking="${BETTERNETWORKING_VERSION}"
 LABEL jfh.mods.AzuCraftyBoxes="${AZUCRAFTYBOXES_VERSION}"
 
 RUN set -eux; \
@@ -66,21 +64,6 @@ RUN set -eux; \
   cp -a /tmp/achievement/BepInEx/plugins/. /opt/jfh-mods/; \
   test -f /opt/jfh-mods/AchievementEnablerPlus/AchievementEnablerPlus.dll; \
   \
-  echo "[build] Instalando BetterNetworking ${BETTERNETWORKING_VERSION}"; \
-  mkdir -p /tmp/betternetworking; \
-  curl \
-  --fail \
-  --silent \
-  --show-error \
-  --location \
-  --retry 3 \
-  --output /tmp/betternetworking.zip \
-  "https://thunderstore.io/package/download/SimplifyDave/BetterNetworking_Valheim/${BETTERNETWORKING_VERSION}/"; \
-  unzip -q /tmp/betternetworking.zip -d /tmp/betternetworking; \
-  test -d /tmp/betternetworking/BepInEx/plugins/BetterNetworking_Valheim; \
-  cp -a /tmp/betternetworking/BepInEx/plugins/BetterNetworking_Valheim /opt/jfh-mods/; \
-  test -f /opt/jfh-mods/BetterNetworking_Valheim/DIT.BetterNetworking10.dll; \
-  \
   echo "[build] Instalando AzuCraftyBoxes ${AZUCRAFTYBOXES_VERSION}"; \
   echo "[build] Instalando AzuCraftyBoxes ${AZUCRAFTYBOXES_VERSION}"; \
   mkdir -p /tmp/azucrafty; \
@@ -110,8 +93,6 @@ RUN set -eux; \
   /tmp/planteverything.zip \
   /tmp/achievement \
   /tmp/achievement.zip \
-  /tmp/betternetworking \
-  /tmp/betternetworking.zip \
   /tmp/azucrafty \
   /tmp/azucrafty.zip
 
@@ -128,11 +109,9 @@ mkdir -p "${TARGET}"
 
 rm -rf "${TARGET}/Jowleth"
 rm -rf "${TARGET}/AchievementEnablerPlus"
-rm -rf "${TARGET}/BetterNetworking_Valheim"
 rm -rf "${TARGET}/Azumatt-AzuCraftyBoxes"
 rm -f "${TARGET}/Advize_PlantEverything.dll"
 rm -f  "${TARGET}/Advize_PlantEverything.dll"
-rm -f  "${TARGET}/DIT.BetterNetworking10.dll"
 rm -f  "${TARGET}/AzuCraftyBoxes.dll"
 rm -f  "${TARGET}/AchievementEligibility.dll"
 rm -f  "${TARGET}/ValheimItemSanitizer.dll"
