@@ -99,9 +99,8 @@ RUN set -eux; \
   --output /tmp/betternetworking.zip \
   "https://thunderstore.io/package/download/SimplifyDave/BetterNetworking_Valheim/${BETTERNETWORKING_VALHEIM_VERSION}/"; \
   unzip -q /tmp/betternetworking.zip -d /tmp/betternetworking; \
-  plugin_dll="$(find /tmp/betternetworking -type f -name DIT.BetterNetworking10.dll -print -quit)"; \
-  test -n "${plugin_dll}"; \
-  cp "${plugin_dll}" /opt/jfh-mods/BetterNetworking_Valheim/; \
+  test -f /tmp/betternetworking/DIT.BetterNetworking10.dll; \
+  cp /tmp/betternetworking/DIT.BetterNetworking10.dll \
   test -f /opt/jfh-mods/BetterNetworking_Valheim/DIT.BetterNetworking10.dll; \
   rm -rf /tmp/betternetworking /tmp/betternetworking.zip
 
