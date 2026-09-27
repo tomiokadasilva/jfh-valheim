@@ -89,45 +89,23 @@ RUN set -eux; \
 
 RUN set -eux; \
   echo "[build] Instalando BetterNetworking_Valheim ${BETTERNETWORKING_VALHEIM_VERSION}"; \
-  mkdir -p /tmp/betternetworking; \
-  curl \
-  --fail \
-  --silent \
-  --show-error \
-  --location \
-  --retry 3 \
+  mkdir -p /tmp/betternetworking /opt/jfh-mods/BetterNetworking_Valheim; \
+  curl --fail --silent --show-error --location --retry 3 \
   --output /tmp/betternetworking.zip \
   "https://thunderstore.io/package/download/SimplifyDave/BetterNetworking_Valheim/${BETTERNETWORKING_VALHEIM_VERSION}/"; \
-  unzip -q /tmp/betternetworking.zip -d /tmp/betternetworking; \
-  echo "[build] Extracting BetterNetworking archive"; \
-  unzip -q /tmp/betternetworking.zip -d /tmp/betternetworking; \
+  unzip -t /tmp/betternetworking.zip; \
+  unzip_status=0; \
+  unzip -q /tmp/betternetworking.zip -d /tmp/betternetworking || unzip_status=$?; \
+  echo "[build] unzip exit status: ${unzip_status}"; \
   echo "[build] Extracted files:"; \
   find /tmp/betternetworking -type f -print; \
-  echo "[build] Checking BetterNetworking DLL"; \
-  test -f /tmp/betternetworking/plugins/BetterNetworking_Valheim/DIT.BetterNetworking10.dll; \
-  echo "[build] Copying BetterNetworking DLL"; \
-  mkdir -p /opt/jfh-mods/BetterNetworking_Valheim; \
-  cp -a /tmp/betternetworking/plugins/BetterNetworking_Valheim/. /opt/jfh-mods/BetterNetworking_Valheim/; \
-  echo "[build] Verifying staged DLL"; \
-  test -f /opt/jfh-mods/BetterNetworking_Valheim/DIT.BetterNetworking10.dll; \
-  echo "[build] Cleaning temporary files"; \
-  rm -rf /tmp/betternetworking /tmp/betternetworking.zip
-
-RUN set -eux; \
-  echo "[build] Plugins empacotados:"; \
-  find /opt/jfh-mods -type f -name '*.dll' -print; \
-  \
-  rm -rf \
-  /tmp/norain \
-  /tmp/norain.zip \
-  /tmp/planteverything \
-  /tmp/planteverything.zip \
-  /tmp/achievement \
-  /tmp/achievement.zip \
-  /tmp/azucrafty \
-  /tmp/azucrafty.zip \
-  /tmp/betternetworking \
-  /tmp/betternetworking.zip
+  dll_path="$(find /tmp/betternetworking -type f -name 'DIT.BetterNetworking10.dll' -print -quit)"; \
+  if [ -z "${dll_path}" ]; then \
+  echo "[build] ERROR: DIT.BetterNetworking10.dll not found"; \
+  exit 1; \
+  fi; \
+  echo "[build] Found DLL at: ${dll_path}"; \
+  cp "${dll_path}" /opt/jfh-mods/BetterNetworking_Valheim/
 
 
 RUN cat > /usr/local/sbin/jfh-bootstrap <<'EOF'
