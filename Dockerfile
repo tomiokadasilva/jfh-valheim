@@ -3,6 +3,7 @@
 FROM ghcr.io/community-valheim-tools/valheim-server:latest
 
 ARG NORAIN_VERSION=1.3.2
+ARG TARGETPORTAL_VERSION=1.2.3
 ARG PLANTEVERYTHING_VERSION=1.21.3
 ARG ACHIEVEMENT_ENABLER_PLUS_VERSION=2.0.3
 ARG AZUCRAFTYBOXES_VERSION=1.8.19
@@ -12,8 +13,9 @@ ARG NETWORK_PERFORMANCE_SYSTEM_VERSION=1.11.0
 
 LABEL org.opencontainers.image.title="jfh-valheim"
 
-LABEL org.opencontainers.image.description="Valheim dedicated server with NoRainDamage, PlantEverything, Achievement Enabler Plus, AzuCraftyBoxes and BetterNetworking"
+LABEL org.opencontainers.image.description="Valheim dedicated server with NoRainDamage, TargetPortal, PlantEverything, Achievement Enabler Plus, AzuCraftyBoxes and BetterNetworking"
 LABEL jfh.mods.NoRainDamage="${NORAIN_VERSION}"
+LABEL jfh.mods.TargetPortal="${TARGETPORTAL_VERSION}"
 LABEL jfh.mods.PlantEverything="${PLANTEVERYTHING_VERSION}"
 LABEL jfh.mods.AchievementEnablerPlus="${ACHIEVEMENT_ENABLER_PLUS_VERSION}"
 LABEL jfh.mods.AzuCraftyBoxes="${AZUCRAFTYBOXES_VERSION}"
@@ -40,6 +42,23 @@ RUN set -eux; \
   cp -a /tmp/norain/BepInEx/plugins/. /opt/jfh-mods/; \
   test -f /opt/jfh-mods/Jowleth/NoRainDamage.dll; \
   rm -rf /tmp/norain /tmp/norain.zip
+
+RUN set -eux; \
+  echo "[build] Instalando TargetPortal ${TARGETPORTAL_VERSION}"; \
+  mkdir -p /tmp/targetportal; \
+  curl \
+  --fail \
+  --silent \
+  --show-error \
+  --location \
+  --retry 3 \
+  --output /tmp/targetportal.zip \
+  "https://thunderstore.io/package/download/Smoothbrain/TargetPortal/${TARGETPORTAL_VERSION}/"; \
+  unzip -q /tmp/targetportal.zip -d /tmp/targetportal; \
+  test -d /tmp/targetportal/BepInEx/plugins; \
+  cp -a /tmp/targetportal/BepInEx/plugins/. /opt/jfh-mods/; \
+  test -n "$(find /opt/jfh-mods -type f -iname '*TargetPortal*.dll' -print -quit)"; \
+  rm -rf /tmp/targetportal /tmp/targetportal.zip
 
 RUN set -eux; \
   echo "[build] Instalando PlantEverything ${PLANTEVERYTHING_VERSION}"; \
@@ -160,6 +179,7 @@ mkdir -p "${TARGET}"
 
 rm -rf "${TARGET}/Jotunn"
 rm -rf "${TARGET}/Jowleth"
+find "${TARGET}" -type f -iname '*TargetPortal*.dll' -delete
 rm -rf "${TARGET}/AchievementEnablerPlus"
 rm -rf "${TARGET}/BetterNetworking_Valheim"
 rm -f  "${TARGET}/Advize_PlantEverything.dll"
