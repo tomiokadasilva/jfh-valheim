@@ -3,7 +3,7 @@
 FROM ghcr.io/community-valheim-tools/valheim-server:latest
 
 ARG NORAIN_VERSION=1.3.2
-ARG TARGETPORTAL_VERSION=1.2.3
+ARG PORTALNETWORK_VERSION=0.1.1
 ARG FUELETERNAL_VERSION=1.2.1
 ARG PLANTEVERYTHING_VERSION=1.21.3
 ARG ACHIEVEMENT_ENABLER_PLUS_VERSION=2.0.3
@@ -14,9 +14,9 @@ ARG NETWORK_PERFORMANCE_SYSTEM_VERSION=1.11.0
 
 LABEL org.opencontainers.image.title="jfh-valheim"
 
-LABEL org.opencontainers.image.description="Valheim dedicated server with NoRainDamage, TargetPortal, FuelEternal, PlantEverything, Achievement Enabler Plus, AzuCraftyBoxes and BetterNetworking"
+LABEL org.opencontainers.image.description="Valheim dedicated server with NoRainDamage, PORTALNETWORK, FuelEternal, PlantEverything, Achievement Enabler Plus, AzuCraftyBoxes and BetterNetworking"
 LABEL jfh.mods.NoRainDamage="${NORAIN_VERSION}"
-LABEL jfh.mods.TargetPortal="${TARGETPORTAL_VERSION}"
+LABEL jfh.mods.PORTALNETWORK="${PORTALNETWORK_VERSION}"
 LABEL jfh.mods.FuelEternal="${FUELETERNAL_VERSION}"
 LABEL jfh.mods.PlantEverything="${PLANTEVERYTHING_VERSION}"
 LABEL jfh.mods.AchievementEnablerPlus="${ACHIEVEMENT_ENABLER_PLUS_VERSION}"
@@ -46,20 +46,20 @@ RUN set -eux; \
   rm -rf /tmp/norain /tmp/norain.zip
 
 RUN set -eux; \
-  echo "[build] Instalando TargetPortal ${TARGETPORTAL_VERSION}"; \
-  mkdir -p /tmp/targetportal; \
+  echo "[build] Instalando PORTALNETWORK ${PORTALNETWORK_VERSION}"; \
+  mkdir -p /tmp/portalnetwork; \
   curl \
   --fail \
   --silent \
   --show-error \
   --location \
   --retry 3 \
-  --output /tmp/targetportal.zip \
-  "https://thunderstore.io/package/download/Smoothbrain/TargetPortal/${TARGETPORTAL_VERSION}/"; \
-  unzip -q /tmp/targetportal.zip -d /tmp/targetportal; \
-  test -d /tmp/targetportal/; \
-  cp -a /tmp/targetportal/. /opt/jfh-mods/; \
-  test -n "$(find /opt/jfh-mods -type f -iname '*TargetPortal*.dll' -print -quit)"; \
+  --output /tmp/portalnetwork.zip \
+  "https://old.thunderstore.io/package/download/Aestelwen/PortalNetwork/${PORTALNETWORK_VERSION}/"; \
+  unzip -q /tmp/portalnetwork.zip -d /tmp/portalnetwork; \
+  test -d /tmp/portalnetwork/; \
+  cp -a /tmp/portalnetwork/. /opt/jfh-mods/; \
+  test -n "$(find /opt/jfh-mods -type f -iname '*PortalNetwork*.dll' -print -quit)"; \
   rm -rf /tmp/targetportal /tmp/targetportal.zip
 
 RUN set -eux; \
