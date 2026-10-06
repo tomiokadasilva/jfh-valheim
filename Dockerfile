@@ -60,7 +60,7 @@ RUN set -eux; \
   test -d /tmp/portalnetwork/; \
   cp -a /tmp/portalnetwork/. /opt/jfh-mods/; \
   test -n "$(find /opt/jfh-mods -type f -iname '*PortalNetwork*.dll' -print -quit)"; \
-  rm -rf /tmp/targetportal /tmp/targetportal.zip
+  rm -rf /tmp/PortalNetwork /tmp/PortalNetwork.zip
 
 RUN set -eux; \
   echo "[build] Instalando FuelEternal ${FUELETERNAL_VERSION}"; \
@@ -198,7 +198,7 @@ mkdir -p "${TARGET}"
 
 rm -rf "${TARGET}/Jotunn"
 rm -rf "${TARGET}/Jowleth"
-rm -rf "${TARGET}/TargetPortal/"
+rm -rf "${TARGET}/PortalNetwork/"
 rm -rf "${TARGET}/FuelEternal"
 rm -rf "${TARGET}/AchievementEnablerPlus"
 rm -rf "${TARGET}/BetterNetworking_Valheim"
